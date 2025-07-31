@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:01:22 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/07/31 19:21:22 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:28:09 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,43 +29,44 @@ int	ft_atoi(const char *nptr)
 	return (result * sign);
 }
 
-long get_time(void)
+long	get_time(void)
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-long get_simtime(t_data *data)
+long	get_simtime(t_data *data)
 {
-    return (get_time() - data->sim_start);
+	return (get_time() - data->sim_start);
 }
 
-void    print_status(t_data *data, int id, t_action action)
+void	print_status(t_data *data, int id, t_action action)
 {
-    long  t_stamp;
+	long	t_stamp;
 
-    if (action != DEATH)
-    {
-        pthread_mutex_lock(&data->end_lock);
-        if (data->simulation_end)
-        {
-            pthread_mutex_unlock(&data->end_lock);
-            return;
-        }
-        pthread_mutex_unlock(&data->end_lock);
-    }
-    t_stamp = get_simtime(data);
-    pthread_mutex_lock(&data->write_lock);
-    if (action == EATING)
-        printf("%ld %d is eating\n", t_stamp, id);
-    else if (action == THINKING)
-        printf("%ld %d is thinking\n", t_stamp, id);
-    else if (action == SLEEPING)
-        printf("%ld %d is sleeping\n", t_stamp, id);
-    else if (action == FORK)
-        printf("%ld %d has taken a fork\n", t_stamp, id);
-    else if (action == DEATH)
-        printf("%ld %d died\n", t_stamp, id);
-    pthread_mutex_unlock(&data->write_lock);
+	if (action != DEATH)
+	{
+		pthread_mutex_lock(&data->end_lock);
+		if (data->simulation_end)
+		{
+			pthread_mutex_unlock(&data->end_lock);
+			return ;
+		}
+		pthread_mutex_unlock(&data->end_lock);
+	}
+	t_stamp = get_simtime(data);
+	pthread_mutex_lock(&data->write_lock);
+	if (action == EATING)
+		printf("%ld %d is eating\n", t_stamp, id);
+	else if (action == THINKING)
+		printf("%ld %d is thinking\n", t_stamp, id);
+	else if (action == SLEEPING)
+		printf("%ld %d is sleeping\n", t_stamp, id);
+	else if (action == FORK)
+		printf("%ld %d has taken a fork\n", t_stamp, id);
+	else if (action == DEATH)
+		printf("%ld %d died\n", t_stamp, id);
+	pthread_mutex_unlock(&data->write_lock);
 }
