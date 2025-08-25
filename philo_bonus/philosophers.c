@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 21:10:25 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 22:42:45 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/25 23:01:09 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,25 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	data.sim_start = get_time();
-	if (!init_table(&data, data.table.phil_count)){
+	if (!init_table(&data, data.table.phil_count))
+	{
 		return (cleanup(&data), 1);
 	}
 	spawn(&data);
-	if (pthread_create(&data.death_watcher, NULL, death_checker, &data) != 0) {
+	if (pthread_create(&data.death_watcher, NULL, death_checker, &data) != 0) 
+	{
 		printf("Error: Failed to create death watcher thread\n");
 		return (cleanup(&data), 1);
 	}
-	if (data.must_eat > 0) {
+	if (data.must_eat > 0) 
+	{
 		if (pthread_create(&data.meal_watcher, NULL, meal_watcher, &data) != 0) {
 			return (cleanup(&data), 1);
 		}
 	}
 	pthread_join(data.death_watcher, NULL);
-	if (data.must_eat > 0) {
+	if (data.must_eat > 0) 
+	{
 		pthread_join(data.meal_watcher, NULL);
 	}
 	return (cleanup(&data), 0);

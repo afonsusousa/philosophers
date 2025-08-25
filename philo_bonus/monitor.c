@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:00:16 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 22:48:41 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/25 23:00:43 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void	*meal_watcher(void *arg)
 	return (NULL);
 }
 
-void	*death_checker(void *arg) {
-
+void	*death_checker(void *arg) 
+{
 	t_data *data;
 	int		i;
 

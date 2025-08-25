@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 20:20:22 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 22:37:19 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/25 23:01:27 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,8 @@ void open_phil_sems(t_phil *phil)
 }
 bool open_program_sems(t_data *data)
 {
-    // Clean up existing semaphores
     sem_unlink("WRITE_LOCK");
     sem_unlink("END_LOCK");
-
     data->write_lock = sem_open("WRITE_LOCK", O_CREAT | O_EXCL,
                                 S_IRUSR | S_IWUSR, 1);
     if (data->write_lock == SEM_FAILED)

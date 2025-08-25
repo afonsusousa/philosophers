@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 21:30:00 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 22:52:28 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/25 23:01:51 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ bool spawn(t_data *data)
         data->table.phil[i].data = data;
         open_phil_sems(&data->table.phil[i]);
         data->table.phil[i].pid = fork();
-        if (data->table.phil[i].pid == 0) {
+        if (data->table.phil[i].pid == 0)
+        {
             phil_life(&data->table.phil[i]);
         } else if (data->table.phil[i].pid < 0)
             return (false);
