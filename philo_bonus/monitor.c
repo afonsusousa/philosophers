@@ -21,6 +21,7 @@ void	die(t_data *data, t_phil *phil)
 	sem_post(phil->meal_lock);
 	sem_wait(data->write_lock);
 }
+
 void	*awareness(void *arg)
 {
 	t_phil	*phil;
@@ -52,9 +53,9 @@ void	*awareness(void *arg)
 void	*meal_watcher(void *arg)
 {
 	int		count;
-	t_data *data;
+	t_data	*data;
 
-	data = (t_data *) arg;
+	data = (t_data *)arg;
 	count = data->table.phil_count;
 	while (count)
 	{
@@ -66,17 +67,16 @@ void	*meal_watcher(void *arg)
 	return (NULL);
 }
 
-void	*death_checker(void *arg) 
+void	*death_checker(void *arg)
 {
-	t_data *data;
+	t_data	*data;
 	int		i;
 
-	data = (t_data *) arg;
+	data = (t_data *)arg;
 	i = data->table.phil_count;
-    sem_wait(data->table.death);
+	sem_wait(data->table.death);
 	kill_all_children(data);
 	while (i--)
 		sem_post(data->table.full);
 	return (NULL);
 }
-

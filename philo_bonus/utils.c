@@ -63,4 +63,3 @@ void	print_status(t_data *data, int id, t_action action)
 		printf("%ld %d died\n", t_stamp, id);
 	sem_post(data->write_lock);
 }
-
