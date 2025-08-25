@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 22:42:29 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 23:00:16 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/25 23:03:15 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static void clean_phils(t_data *data)
 			if (data->table.phil[i].meal_lock) 
             {
 				sem_close(data->table.phil[i].meal_lock);
-				if (data->table.phil[i].meal_lock_name) {
+				if (data->table.phil[i].meal_lock_name) 
+                {
 					sem_unlink(data->table.phil[i].meal_lock_name);
 					free(data->table.phil[i].meal_lock_name);
 					data->table.phil[i].meal_lock_name = NULL;
