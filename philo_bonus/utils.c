@@ -5,12 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 18:01:22 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/07/31 19:28:09 by amagno-r         ###   ########.fr       */
+/*   Created: 2025/08/05 21:27:49 by amagno-r          #+#    #+#             */
+/*   Updated: 2025/08/22 19:57:06 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <fcntl.h>
 
 int	ft_atoi(const char *nptr)
 {
@@ -26,6 +27,8 @@ int	ft_atoi(const char *nptr)
 			sign *= -1;
 	while (*nptr >= '0' && *nptr <= '9')
 		result = result * 10 + (*nptr++ - '0');
+	if (*nptr != '\0')
+		return (-1);
 	return (result * sign);
 }
 
@@ -46,18 +49,8 @@ void	print_status(t_data *data, int id, t_action action)
 {
 	long	t_stamp;
 
-	if (action != DEATH)
-	{
-		pthread_mutex_lock(&data->end_lock);
-		if (data->simulation_end)
-		{
-			pthread_mutex_unlock(&data->end_lock);
-			return ;
-		}
-		pthread_mutex_unlock(&data->end_lock);
-	}
 	t_stamp = get_simtime(data);
-	pthread_mutex_lock(&data->write_lock);
+	sem_wait(data->write_lock);
 	if (action == EATING)
 		printf("%ld %d is eating\n", t_stamp, id);
 	else if (action == THINKING)
@@ -68,5 +61,6 @@ void	print_status(t_data *data, int id, t_action action)
 		printf("%ld %d has taken a fork\n", t_stamp, id);
 	else if (action == DEATH)
 		printf("%ld %d died\n", t_stamp, id);
-	pthread_mutex_unlock(&data->write_lock);
+	sem_post(data->write_lock);
 }
+

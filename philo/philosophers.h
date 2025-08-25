@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:01:38 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/07/31 19:19:43 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/25 22:37:58 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_table
 	pthread_mutex_t	*forks;
 	int				phil_count;
 	t_phil			*phil;
-	int				full_bellies;
+	int				meal_watcher;
 }					t_table;
 
 typedef struct s_data
