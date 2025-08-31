@@ -1,24 +1,24 @@
 NAME = philo
-BONUS_NAME = philo_bonus_exec
+BONUS_NAME = philo_bonus
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pthread -g
 
 # Build directories
 BUILD_DIR = build
-PHILO_BUILD_DIR = $(BUILD_DIR)/philo
-BONUS_BUILD_DIR = $(BUILD_DIR)/philo_bonus
+PHILO_BUILD_DIR = $(BUILD_DIR)/mandatory
+BONUS_BUILD_DIR = $(BUILD_DIR)/bonus
 
 # Source files
-SRC = philo/philosophers.c philo/utils.c philo/actions.c philo/monitor.c philo/init_clean.c
-BONUS_SRC = philo_bonus/philosophers.c philo_bonus/utils.c philo_bonus/actions.c philo_bonus/monitor.c philo_bonus/spawn.c philo_bonus/sems.c philo_bonus/cleanup.c
+SRC = mandatory/philosophers.c mandatory/utils.c mandatory/actions.c mandatory/monitor.c mandatory/init_clean.c
+BONUS_SRC = bonus/philosophers.c bonus/utils.c bonus/actions.c bonus/monitor.c bonus/spawn.c bonus/sems.c bonus/cleanup.c
 
 # Object files in build directory
 OBJ = $(SRC:philo/%.c=$(PHILO_BUILD_DIR)/%.o)
-BONUS_OBJ = $(BONUS_SRC:philo_bonus/%.c=$(BONUS_BUILD_DIR)/%.o)
+BONUS_OBJ = $(BONUS_SRC:whilo_bonus/%.c=$(BONUS_BUILD_DIR)/%.o)
 
 # Headers
 HEADER = philo/philosophers.h
-BONUS_HEADER = philo_bonus/philosophers.h
+BONUS_HEADER = bonus/philosophers.h
 
 all: $(NAME)
 
@@ -36,11 +36,11 @@ $(BUILD_DIR):
 	mkdir -p $(BONUS_BUILD_DIR)
 
 # Compile philo source files
-$(PHILO_BUILD_DIR)/%.o: philo/%.c $(HEADER)
+$(PHILO_BUILD_DIR)/%.o: mandtory/%.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Compile philo_bonus source files
-$(BONUS_BUILD_DIR)/%.o: philo_bonus/%.c $(BONUS_HEADER)
+# Compile whilo_bonus source files
+$(BONUS_BUILD_DIR)/%.o: bonus/%.c $(BONUS_HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
