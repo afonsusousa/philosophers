@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:01:22 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/05 21:09:31 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/08/31 17:33:07 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	print_status(t_data *data, int id, t_action action)
 {
 	long	t_stamp;
 
+	t_stamp = get_simtime(data);
 	if (action != DEATH)
 	{
 		pthread_mutex_lock(&data->end_lock);
@@ -58,7 +59,6 @@ void	print_status(t_data *data, int id, t_action action)
 		}
 		pthread_mutex_unlock(&data->end_lock);
 	}
-	t_stamp = get_simtime(data);
 	pthread_mutex_lock(&data->write_lock);
 	if (action == EATING)
 		printf("%ld %d is eating\n", t_stamp, id);
