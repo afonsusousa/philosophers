@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:00:16 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 22:37:58 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:39:35 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,49 +24,47 @@ int	is_simulation_over(t_data *data)
 	return (0);
 }
 
-static int	check_bellies(t_data *data, int i, int *meal_watcher)
+static bool	check_bellies(t_data *data, t_phil *phil)
 {
-	if (data->table.phil[i].meals_eaten == data->must_eat)
-		(*meal_watcher)++;
-	if (*meal_watcher == data->table.phil_count)
+	pthread_mutex_lock(&data->end_lock);
+	if (data->table.meal_watcher == data->table.phil_count)
 	{
-		pthread_mutex_lock(&data->end_lock);
 		data->simulation_end = 1;
 		pthread_mutex_unlock(&data->end_lock);
-		return (0);
+		return (false);
 	}
-	if (get_time() - data->table.phil[i].last_meal > data->time_to_die)
+	pthread_mutex_unlock(&data->end_lock);
+	pthread_mutex_lock(&data->end_lock);
+	if (get_time() - phil->last_meal > data->time_to_die
+		&& phil->meals_eaten != data->must_eat)
 	{
-		pthread_mutex_lock(&data->end_lock);
 		data->simulation_end = 1;
 		pthread_mutex_unlock(&data->end_lock);
-		print_status(data, data->table.phil[i].id, DEATH);
-		return (0);
+		print_status(data, phil->id, DEATH);
+		return (false);
 	}
-	return (1);
+	pthread_mutex_unlock(&data->end_lock);
+	return (true);
 }
 
 void	*monitor_routine(void *arg)
 {
 	t_data	*data;
 	int		i;
-	int		meal_watcher;
 
 	data = (t_data *)arg;
 	while (!is_simulation_over(data))
 	{
-		i = 0;
-		meal_watcher = 0;
-		while (i < data->table.phil_count)
+		i = -1;
+		while (++i < data->table.phil_count)
 		{
 			pthread_mutex_lock(&data->table.phil[i].eat_lock);
-			if (!check_bellies(data, i, &meal_watcher))
+			if (!check_bellies(data, &data->table.phil[i]))
 			{
 				pthread_mutex_unlock(&data->table.phil[i].eat_lock);
 				break ;
 			}
 			pthread_mutex_unlock(&data->table.phil[i].eat_lock);
-			i++;
 		}
 		usleep(1000);
 	}

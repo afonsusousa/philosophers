@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:00:52 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/07/31 19:27:58 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:07:25 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	init_philosophers(t_data *data)
 	int	i;
 
 	i = 0;
+	data->table.meal_watcher = 0;
 	data->table.phil = malloc(sizeof(t_phil) * data->table.phil_count);
 	if (!data->table.phil)
 		return (0);

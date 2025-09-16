@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:01:38 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/08/25 22:37:58 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:48:26 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdbool.h>
 
 typedef enum e_action
 {
@@ -36,6 +37,7 @@ typedef struct s_phil
 	int				left_fork;
 	int				right_fork;
 	pthread_mutex_t	eat_lock;
+	bool 			is_full;
 	long			last_meal;
 	pthread_t		thread;
 	void			*data;
