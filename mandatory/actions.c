@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:59:04 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/09/17 21:44:28 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/09/17 23:29:39 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static bool take_forks(t_data *data, t_phil *phil)
 	second = phil->right_fork;
 	if (first == second)
 		return (print_status(data, phil->id, FORK), false);
-	if (first > second)
+	if (phil->id % 2)
 	{
 		first = phil->right_fork;
 		second = phil->left_fork;
@@ -32,6 +32,24 @@ static bool take_forks(t_data *data, t_phil *phil)
 	print_status(data, phil->id, FORK);
 	pthread_mutex_lock(&data->table.forks[second]);
 	print_status(data, phil->id, FORK);
+	return (true);
+}
+
+static bool release_forks(t_data *data, t_phil *phil)
+{
+
+	int first;
+	int second;
+
+	first = phil->left_fork;
+	second = phil->right_fork;
+	if (phil->id % 2)
+	{
+		first = phil->right_fork;
+		second = phil->left_fork;
+	}
+	pthread_mutex_unlock(&data->table.forks[first]);
+	pthread_mutex_unlock(&data->table.forks[second]);
 	return (true);
 }
 
@@ -47,8 +65,7 @@ static bool	phil_eat(t_data *data, t_phil *phil)
 	pthread_mutex_unlock(&phil->eat_lock);
 	print_status(data, phil->id, EATING);
 	usleep(data->time_to_eat * 1000);
-	pthread_mutex_unlock(&data->table.forks[phil->left_fork]);
-	pthread_mutex_unlock(&data->table.forks[phil->right_fork]);
+	release_forks(data, phil);
 	pthread_mutex_lock(&data->end_lock);
 	if (phil->meals_eaten == data->must_eat)
 		data->table.meal_watcher++;
