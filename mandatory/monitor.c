@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:00:16 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/09/16 18:39:35 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/09/17 21:47:25 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static bool	check_bellies(t_data *data, t_phil *phil)
 	pthread_mutex_lock(&data->end_lock);
 	if (data->table.meal_watcher == data->table.phil_count)
 	{
+		pthread_mutex_lock(&data->write_lock);
 		data->simulation_end = 1;
 		pthread_mutex_unlock(&data->end_lock);
 		return (false);

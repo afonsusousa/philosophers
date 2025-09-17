@@ -6,7 +6,7 @@
 /*   By: amagno-r <amagno-r@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:59:04 by amagno-r          #+#    #+#             */
-/*   Updated: 2025/09/16 19:09:49 by amagno-r         ###   ########.fr       */
+/*   Updated: 2025/09/17 21:44:28 by amagno-r         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,23 @@
 
 static bool take_forks(t_data *data, t_phil *phil)
 {
-	if (phil->left_fork < phil->right_fork)
+
+	int first;
+	int second;
+
+	first = phil->left_fork;
+	second = phil->right_fork;
+	if (first == second)
+		return (print_status(data, phil->id, FORK), false);
+	if (first > second)
 	{
-		pthread_mutex_lock(&data->table.forks[phil->left_fork]);
-		print_status(data, phil->id, FORK);
-		if (phil->left_fork == phil->right_fork)
-		{
-			pthread_mutex_unlock(&data->table.forks[phil->left_fork]);
-			return (false);
-		}
-		pthread_mutex_lock(&data->table.forks[phil->right_fork]);
-		print_status(data, phil->id, FORK);
+		first = phil->right_fork;
+		second = phil->left_fork;
 	}
-	else
-	{
-		pthread_mutex_lock(&data->table.forks[phil->right_fork]);
-		print_status(data, phil->id, FORK);
-		if (phil->left_fork == phil->right_fork)
-		{
-			pthread_mutex_unlock(&data->table.forks[phil->right_fork]);
-			return (false);
-		}
-		pthread_mutex_lock(&data->table.forks[phil->left_fork]);
-		print_status(data, phil->id, FORK);
-	}
+	pthread_mutex_lock(&data->table.forks[first]);
+	print_status(data, phil->id, FORK);
+	pthread_mutex_lock(&data->table.forks[second]);
+	print_status(data, phil->id, FORK);
 	return (true);
 }
 
@@ -72,7 +65,7 @@ static void	phil_sleep_think(t_data *data, t_phil *phil)
 	if (is_simulation_over(data))
 		return ;
 	print_status(data, phil->id, THINKING);
-	usleep(100);
+	usleep(((data->time_to_die - data->time_to_eat - data->time_to_sleep) / 4) * 1000);
 }
 
 void	*phil_life(void *arg)
