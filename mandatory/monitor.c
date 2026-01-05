@@ -34,8 +34,6 @@ static bool	check_bellies(t_data *data, t_phil *phil)
 		pthread_mutex_unlock(&data->end_lock);
 		return (false);
 	}
-	pthread_mutex_unlock(&data->end_lock);
-	pthread_mutex_lock(&data->end_lock);
 	if (get_time() - phil->last_meal > data->time_to_die
 		&& phil->meals_eaten != data->must_eat)
 	{
@@ -57,6 +55,7 @@ void	*monitor_routine(void *arg)
 	while (!is_simulation_over(data))
 	{
 		i = -1;
+
 		while (++i < data->table.phil_count)
 		{
 			pthread_mutex_lock(&data->table.phil[i].eat_lock);
