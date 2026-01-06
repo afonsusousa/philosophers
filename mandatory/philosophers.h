@@ -61,7 +61,6 @@ typedef struct s_data
 	t_table			table;
 	long			sim_start;
 	pthread_mutex_t	write_lock;
-	pthread_mutex_t	end_lock;
 	int				simulation_end;
 }					t_data;
 

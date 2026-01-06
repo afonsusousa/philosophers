@@ -53,8 +53,6 @@ int	init_mutexes(t_data *data)
 	}
 	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
 		return (0);
-	if (pthread_mutex_init(&data->end_lock, NULL) != 0)
-		return (0);
 	return (1);
 }
 
@@ -94,7 +92,6 @@ void	cleanup(t_data *data)
 		pthread_mutex_destroy(&data->table.phil[i].eat_lock);
 	}
 	pthread_mutex_destroy(&data->write_lock);
-	pthread_mutex_destroy(&data->end_lock);
 	free(data->table.forks);
 	free(data->table.phil);
 }

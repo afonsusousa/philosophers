@@ -49,17 +49,12 @@ void	print_status(t_data *data, int id, t_action action)
 	long	t_stamp;
 
 	t_stamp = get_simtime(data);
-	if (action != DEATH)
-	{
-		pthread_mutex_lock(&data->end_lock);
-		if (data->simulation_end)
-		{
-			pthread_mutex_unlock(&data->end_lock);
-			return ;
-		}
-		pthread_mutex_unlock(&data->end_lock);
-	}
 	pthread_mutex_lock(&data->write_lock);
+	if (data->simulation_end)
+	{
+		pthread_mutex_unlock(&data->write_lock);
+		return ;
+	}
 	if (action == EATING)
 		printf("%ld %d is eating\n", t_stamp, id);
 	else if (action == THINKING)
@@ -69,6 +64,9 @@ void	print_status(t_data *data, int id, t_action action)
 	else if (action == FORK)
 		printf("%ld %d has taken a fork\n", t_stamp, id);
 	else if (action == DEATH)
+	{
 		printf("%ld %d died\n", t_stamp, id);
+		data->simulation_end = 1;
+	}
 	pthread_mutex_unlock(&data->write_lock);
 }

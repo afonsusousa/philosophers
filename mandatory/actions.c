@@ -66,21 +66,13 @@ static bool	phil_eat(t_data *data, t_phil *phil)
 	print_status(data, phil->id, EATING);
 	usleep(data->time_to_eat * 1000);
 	release_forks(data, phil);
-	pthread_mutex_lock(&data->end_lock);
-	if (phil->meals_eaten == data->must_eat)
-		data->table.meal_watcher++;
-	pthread_mutex_unlock(&data->end_lock);
 	return (true);
 }
 
 static void	phil_sleep_think(t_data *data, t_phil *phil)
 {
-	if (is_simulation_over(data))
-		return ;
 	print_status(data, phil->id, SLEEPING);
 	usleep(data->time_to_sleep * 1000);
-	if (is_simulation_over(data))
-		return ;
 	print_status(data, phil->id, THINKING);
 	usleep(((data->time_to_die - data->time_to_eat - data->time_to_sleep) / 4) * 1000);
 }
