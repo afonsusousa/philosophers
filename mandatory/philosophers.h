@@ -14,13 +14,13 @@
 # define PHILOSOPHERS_H
 
 # include <pthread.h>
+# include <stdbool.h>
 # include <stddef.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <stdbool.h>
 
 typedef enum e_action
 {
@@ -37,7 +37,7 @@ typedef struct s_phil
 	int				left_fork;
 	int				right_fork;
 	pthread_mutex_t	eat_lock;
-	bool 			is_full;
+	bool			is_full;
 	long			last_meal;
 	pthread_t		thread;
 	void			*data;

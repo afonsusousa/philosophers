@@ -22,19 +22,34 @@ int	is_simulation_over(t_data *data)
 	return (ret);
 }
 
-static bool	check_bellies(t_data *data, t_phil *phil)
+static bool	has_starved(t_data *data, t_phil *phil)
 {
 	if (get_time() - phil->last_meal > data->time_to_die
 		&& phil->meals_eaten != data->must_eat)
 	{
-		pthread_mutex_lock(&data->write_lock);
-		if (!data->simulation_end)
+		print_status(data, phil->id, DEATH);
+		return (true);
+	}
+	return (false);
+}
+
+static bool	check_table(t_data *data, int *finished_eating)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->table.phil_count)
+	{
+		pthread_mutex_lock(&data->table.phil[i].eat_lock);
+		if (data->must_eat != -1
+			&& data->table.phil[i].meals_eaten >= data->must_eat)
+			(*finished_eating)++;
+		if (has_starved(data, &data->table.phil[i]))
 		{
-			data->simulation_end = 1;
-			printf("%ld %d died\n", get_simtime(data), phil->id);
+			pthread_mutex_unlock(&data->table.phil[i].eat_lock);
+			return (false);
 		}
-		pthread_mutex_unlock(&data->write_lock);
-		return (false);
+		pthread_mutex_unlock(&data->table.phil[i].eat_lock);
 	}
 	return (true);
 }
@@ -42,27 +57,14 @@ static bool	check_bellies(t_data *data, t_phil *phil)
 void	*monitor_routine(void *arg)
 {
 	t_data	*data;
-	int		i;
 	int		finished_eating;
 
 	data = (t_data *)arg;
-	while (1)
+	while (!is_simulation_over(data))
 	{
 		finished_eating = 0;
-		i = -1;
-		while (++i < data->table.phil_count)
-		{
-			pthread_mutex_lock(&data->table.phil[i].eat_lock);
-			if (data->must_eat != -1
-				&& data->table.phil[i].meals_eaten >= data->must_eat)
-				finished_eating++;
-			if (!check_bellies(data, &data->table.phil[i]))
-			{
-				pthread_mutex_unlock(&data->table.phil[i].eat_lock);
-				return (NULL);
-			}
-			pthread_mutex_unlock(&data->table.phil[i].eat_lock);
-		}
+		if (!check_table(data, &finished_eating))
+			return (NULL);
 		if (data->must_eat != -1 && finished_eating == data->table.phil_count)
 		{
 			pthread_mutex_lock(&data->write_lock);

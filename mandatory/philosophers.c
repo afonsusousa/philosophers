@@ -29,26 +29,15 @@ int	main(int argc, char **argv)
 	t_data	data;
 
 	if (argc != 5 && argc != 6)
-	{
-		printf("Wrong number of arguments\n");
-		return (1);
-	}
+		return (printf("Wrong number of arguments\n"), 1);
 	init_data(&data, argc, argv);
 	if (data.table.phil_count <= 0 || data.time_to_die <= 0
 		|| data.time_to_eat <= 0 || data.time_to_sleep <= 0)
-	{
-		printf("Error: All arguments must be positive integers\n");
-		return (1);
-	}
+		return (printf("Error: All arguments must be positive integers\n"), 1);
 	if (!init_mutexes(&data) || !init_philosophers(&data))
-	{
-		printf("Error: Initialization failed\n");
-		return (cleanup(&data), 1);
-	}
+		return (printf("Error: Initialization failed\n"), cleanup(&data), 1);
 	if (!start_simulation(&data))
-	{
-		printf("Error: Failed to start simulation\n");
-		return (cleanup(&data), 1);
-	}
+		return (printf("Error: Failed to start simulation\n"), cleanup(&data),
+			1);
 	return (cleanup(&data), 0);
 }

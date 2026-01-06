@@ -13,16 +13,13 @@
 #include "philosophers.h"
 #include <stdbool.h>
 
-static bool take_forks(t_data *data, t_phil *phil)
+static bool	take_forks(t_data *data, t_phil *phil)
 {
-
-	int first;
-	int second;
+	int	first;
+	int	second;
 
 	first = phil->left_fork;
 	second = phil->right_fork;
-	if (first == second)
-		return (print_status(data, phil->id, FORK), false);
 	if (phil->id % 2)
 	{
 		first = phil->right_fork;
@@ -30,16 +27,17 @@ static bool take_forks(t_data *data, t_phil *phil)
 	}
 	pthread_mutex_lock(&data->table.forks[first]);
 	print_status(data, phil->id, FORK);
+	if (first == second)
+		return (pthread_mutex_unlock(&data->table.forks[first]) && false);
 	pthread_mutex_lock(&data->table.forks[second]);
 	print_status(data, phil->id, FORK);
 	return (true);
 }
 
-static bool release_forks(t_data *data, t_phil *phil)
+static bool	release_forks(t_data *data, t_phil *phil)
 {
-
-	int first;
-	int second;
+	int	first;
+	int	second;
 
 	first = phil->left_fork;
 	second = phil->right_fork;
@@ -53,30 +51,6 @@ static bool release_forks(t_data *data, t_phil *phil)
 	return (true);
 }
 
-static bool	phil_eat(t_data *data, t_phil *phil)
-{
-	if (phil->meals_eaten == data->must_eat)
-		return (false);
-	if (!take_forks(data, phil))
-		return (false);
-	pthread_mutex_lock(&phil->eat_lock);
-	phil->last_meal = get_time();
-	phil->meals_eaten++;
-	pthread_mutex_unlock(&phil->eat_lock);
-	print_status(data, phil->id, EATING);
-	usleep(data->time_to_eat * 1000);
-	release_forks(data, phil);
-	return (true);
-}
-
-static void	phil_sleep_think(t_data *data, t_phil *phil)
-{
-	print_status(data, phil->id, SLEEPING);
-	usleep(data->time_to_sleep * 1000);
-	print_status(data, phil->id, THINKING);
-	usleep(((data->time_to_die - data->time_to_eat - data->time_to_sleep) / 4) * 1000);
-}
-
 void	*phil_life(void *arg)
 {
 	t_phil	*phil;
@@ -84,9 +58,21 @@ void	*phil_life(void *arg)
 
 	phil = (t_phil *)arg;
 	data = (t_data *)phil->data;
-	if (phil->id % 2 == 0)
-		usleep(100);
-	while (!is_simulation_over(data) && phil_eat(data, phil))
-		phil_sleep_think(data, phil);
+	while (true)
+	{
+		if (is_simulation_over(data) || !take_forks(data, phil))
+			break ;
+		pthread_mutex_lock(&phil->eat_lock);
+		phil->last_meal = get_time();
+		phil->meals_eaten++;
+		pthread_mutex_unlock(&phil->eat_lock);
+		print_status(data, phil->id, EATING);
+		usleep(data->time_to_eat * 1000);
+		release_forks(data, phil);
+		print_status(data, phil->id, SLEEPING);
+		usleep(data->time_to_sleep * 1000);
+		print_status(data, phil->id, THINKING);
+		usleep(1000);
+	}
 	return (NULL);
 }

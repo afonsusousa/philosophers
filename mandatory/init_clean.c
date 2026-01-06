@@ -75,9 +75,7 @@ int	start_simulation(t_data *data)
 	pthread_join(monitor_thread, NULL);
 	i = -1;
 	while (++i < data->table.phil_count)
-	{
 		pthread_join(data->table.phil[i].thread, NULL);
-	}
 	return (1);
 }
 
